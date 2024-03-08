@@ -80,15 +80,17 @@ fun MyApp() {
 
     if (clickedText.isNotEmpty()) {
         Text(text = clickedText, color = Color.Black, fontSize = 20.sp,
-            modifier = Modifier.height(50.dp).fillMaxWidth()
-            .drawWithContent {
-                drawContent()
-                drawRect(
-                    color = Color.LightGray,
-                    topLeft = Offset(0f, 100f),
-                    size = Size(size.width, 30f)
-                )
-            }
+            modifier = Modifier
+                .height(50.dp)
+                .fillMaxWidth()
+                .drawWithContent {
+                    drawContent()
+                    drawRect(
+                        color = Color.LightGray,
+                        topLeft = Offset(0f, 100f),
+                        size = Size(size.width, 30f)
+                    )
+                }
         )
 
         DrawText()
@@ -114,11 +116,18 @@ fun DrawShape.draw(drawScope: DrawScope) {
         }
 
         1 -> {
-            drawScope.drawCircle(
-                color = Color.Red,
+            val gradientColors = listOf(Color.Red, Color.Yellow, Color.Green)
+            val gradientBrush = Brush.radialGradient(
+                colors = gradientColors,
                 center = position,
                 radius = 40f
             )
+            drawScope.drawCircle(brush = gradientBrush, radius = 40f, center = position)
+            /*drawScope.drawCircle(
+                color = Color.Red,
+                center = position,
+                radius = 40f
+            )*/
         }
 
         2 -> {
