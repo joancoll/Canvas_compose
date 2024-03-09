@@ -4,18 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
@@ -77,7 +79,6 @@ fun MyApp() {
         drawShapes.forEach { it.draw(this) }
     }
 
-
     if (clickedText.isNotEmpty()) {
         Text(text = clickedText, color = Color.Black, fontSize = 20.sp,
             modifier = Modifier
@@ -92,13 +93,87 @@ fun MyApp() {
                     )
                 }
         )
-
+        DrawBehind()
+        DrawWithContent()
+        DrawWithCache()
         DrawText()
     }
 }
 
-data class DrawShape(val position: Offset, val type: Int)
+@Composable
+fun DrawBehind() {
+    Box(
+        modifier = Modifier
+            .height(80.dp)
+            .width(80.dp),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Text(text = "Hello world!",
+            modifier = Modifier
+                .drawBehind {
+                    drawRoundRect(
+                        color = Color.Black,
+                        cornerRadius = CornerRadius(16.dp.toPx(), 16.dp.toPx())
+                    )
+                }
+                .padding(horizontal = 30.dp, vertical = 10.dp),
+            color = Color.White
+        )
+    }
 
+}
+
+@Composable
+fun DrawWithContent() {
+    Box(
+        modifier = Modifier
+            .height(80.dp)
+            .width(80.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Spacer(modifier = Modifier
+            .drawWithContent {
+                drawRoundRect(
+                    color = Color.Black,
+                    cornerRadius = CornerRadius(16.dp.toPx(), 16.dp.toPx())
+                )
+                drawCircle(
+                    color = Color.Red
+                )
+            }
+            .size(100.dp))
+    }
+}
+
+@Composable
+fun DrawWithCache() {
+    Box(
+        modifier = Modifier
+            .height(80.dp)
+            .width(80.dp),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Text(
+            "Hello Compose!",
+            modifier = Modifier
+                .drawWithCache {
+                    val brush = Brush.linearGradient(
+                        listOf(Color.Red, Color.Yellow, Color.Green)
+                    )
+                    onDrawBehind {
+                        drawRoundRect(
+                            brush,
+                            cornerRadius = CornerRadius(10.dp.toPx())
+                        )
+                    }
+                }
+                .padding(horizontal = 10.dp, vertical = 10.dp)
+        )
+    }
+}
+
+
+data class DrawShape(val position: Offset, val type: Int)
 
 fun DrawShape.draw(drawScope: DrawScope) {
     when (type) {
@@ -106,12 +181,12 @@ fun DrawShape.draw(drawScope: DrawScope) {
             drawScope.drawRect(
                 color = Color.Cyan,
                 topLeft = Offset(position.x - 20, position.y - 20),
-                size = androidx.compose.ui.geometry.Size(40f, 20f)
+                size = Size(40f, 20f)
             )
             drawScope.drawRect(
                 color = Color.Yellow,
                 topLeft = Offset(position.x - 10, position.y),
-                size = androidx.compose.ui.geometry.Size(40f, 20f)
+                size = Size(40f, 20f)
             )
         }
 
@@ -150,7 +225,7 @@ fun DrawShape.draw(drawScope: DrawScope) {
             drawScope.drawRoundRect(
                 color = Color.Magenta,
                 topLeft = Offset(position.x - 40, position.y - 20),
-                size = androidx.compose.ui.geometry.Size(80f, 40f),
+                size = Size(80f, 40f),
                 cornerRadius = CornerRadius(20f, 20f)
             )
         }
